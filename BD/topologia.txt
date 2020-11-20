@@ -1,0 +1,12 @@
+AB 1
+AC 3
+AD 5
+BA 1
+BE 4
+CA 3
+CD 6
+DA 5
+DC 6
+DE 2
+EB 4
+ED 2
