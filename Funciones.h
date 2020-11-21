@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -11,5 +12,7 @@ void lectura(vector<char> *ptr);
 void conexiones(vector<string> &conexiones_);
 void escritura(string ,short int);
 void escritura(vector<char> enrutadores);
+int algoritmo(map<char,map<char,char>>,char,char,vector<char>,char,short int);
+
 
 #endif // FUNCIONES_H

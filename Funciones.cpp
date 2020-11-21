@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -108,3 +109,34 @@ bool verificador(char nombre){
     }
     return true;
 }
+
+int algoritmo(map<char,map<char,char>> rutas,char inicio,char final,vector<char> repetido,char primerdato,short int i){
+
+    for(auto a=rutas[inicio].begin();a!=rutas[inicio].end();a++){
+        bool l=true;
+        for(auto b:repetido){
+            if(a->first==b){
+                l=false;
+                }
+            }
+        if(primerdato==inicio and l==true){
+            repetido.push_back(a->first);
+            }
+        if(l==true){
+            cout<< "El enrutador conectado es: ";
+            inicio=a->first;
+            cout<< a->first <<endl;
+            i+=(a->second-48);
+            if(a->first==final){
+                inicio=primerdato;
+                cout<<i<<endl;
+                i=0;
+                }
+            return algoritmo(rutas,inicio,final,repetido,primerdato,i);
+            }
+        }
+    return i;
+
+
+}
+

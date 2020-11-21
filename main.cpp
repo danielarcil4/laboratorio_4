@@ -87,8 +87,8 @@ int main()
                 cout<<"El enrutador ya existe!!"<<endl;
     }
     else if(A=='2'){
-        char letra;
-
+        char letra,final;
+        short int i=0;
         vector<string> conexiones_;
         lectura(&enrutadores);
         conexiones(conexiones_);
@@ -96,7 +96,7 @@ int main()
         //se crean las claves
         for(auto a:enrutadores){
             letra=a;
-            short int i=0;
+            i=0;
             for(auto I:conexiones_){
                 if(letra==conexiones_[i][0])
                     conexion[conexiones_[i][1]]=conexiones_[i][2];
@@ -105,6 +105,23 @@ int main()
             rutas[a]=conexion;
             conexion.clear();
         }
+        cout<<"Hacer una busqueda\n"
+              "Ingresar primer enrutador: "<<endl;
+        cin>>letra;
+        cout<<"Ingresar segundo enrutador: "<<endl;
+        cin>>final;
+        if(letra<=122 and letra>=97)
+            letra-=32;
+        if(final<=122 and final>=97)
+            final-=32;
+
+        //cout<<"La distacia entre los enrutadores es: "<<rutas[letra][letra2]<<endl;
+        system("cls");
+        i=0;
+        char primerdato=letra;
+        vector<char> repetido;
+        repetido.push_back(primerdato);
+        i = algoritmo(rutas,letra,final,repetido,primerdato,i);
 
 
     }
