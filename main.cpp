@@ -88,7 +88,7 @@ int main()
     }
     else if(A=='2'){
         char letra,final;
-        short int i=0;
+        short int i=0,I=100;
         vector<string> conexiones_;
         lectura(&enrutadores);
         conexiones(conexiones_);
@@ -119,10 +119,13 @@ int main()
         system("cls");
         i=0;
         char primerdato=letra;
-        vector<char> repetido;
-        repetido.push_back(primerdato);
-        i = algoritmo(rutas,letra,final,repetido,primerdato,i);
-
+        string primerdato_,Ruta_;
+        primerdato_+=letra;
+        vector<string> repetido;
+        repetido.push_back(primerdato_);
+        map<char,vector<string>> repetidos;
+        i = algoritmo(rutas,letra,final,repetido,primerdato,i,repetidos,I,Ruta_);
+        cout<<i<<endl;
 
     }
 

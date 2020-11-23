@@ -110,33 +110,111 @@ bool verificador(char nombre){
     return true;
 }
 
-int algoritmo(map<char,map<char,char>> rutas,char inicio,char final,vector<char> repetido,char primerdato,short int i){
-
+int algoritmo(map<char,map<char,char>> rutas,char inicio,char final,vector<string> repetido,char primerdato,short int i,map<char,vector<string>> repetidos,short int cont,string Ruta_){
+    short int I=0;
+    bool L=true;
+    string copia_s,copia_pri,copia_in,copia;
     for(auto a=rutas[inicio].begin();a!=rutas[inicio].end();a++){
+        copia_s = a->first ,copia_pri=primerdato,copia_in=inicio;
+
+        //repetido.push_back(primerdato);
+        //repetidos[inicio].push_back(primerdato);
         bool l=true;
-        for(auto b:repetido){
-            if(a->first==b){
+
+        //Ingresa el dato base a todos
+        for(auto b:repetidos[a->first])
+            if(b==copia_pri)
+                L=false;
+
+        if(L==true)
+            repetidos[a->first].push_back(copia_pri);
+
+        L=true;
+
+        //verifica no ir en un camino repetido
+        for(auto b:repetidos[inicio]){
+            if(copia_s==b){
                 l=false;
                 }
             }
-        if(primerdato==inicio and l==true){
-            repetido.push_back(a->first);
-            }
         if(l==true){
-            cout<< "El enrutador conectado es: ";
+            copia=repetido[0];
+            repetido[0]+= a->first;
+            for(auto b:repetidos[primerdato]){
+                if(repetido[0]==b){
+                    l=false;
+                    }
+                }
+            if(l==false){
+                repetido.clear();
+                repetido.push_back(copia);
+                copia=a->first;
+                repetidos[inicio].push_back(copia);
+            }
+            if(repetido[0].length()>1){
+                for(auto c:rutas[inicio]){
+                    for(auto d:repetidos[inicio]){
+                        copia_s=c.first;
+                        if(d==copia_s)
+                            I++;
+                    }
+
+                }
+                if(I==rutas[inicio].size()){
+                    repetidos[primerdato].push_back(repetido[0]);
+                    repetido.clear();
+                    repetido.push_back(copia_pri);
+                    inicio=primerdato;
+                    i=0;
+                    return algoritmo(rutas,inicio,final,repetido,primerdato,i,repetidos,cont,Ruta_);
+                    }
+             }
+
+        }
+
+        if(l==true){
+            for(auto b:repetidos[primerdato]){
+                if(b==repetido[0])
+                    L=false;
+            }
+            if(rutas[inicio].size()-1>1 and L==true)
+                repetidos[primerdato].push_back(repetido[0]);
+            L=true;
+
+            for(auto b:repetidos[a->first]){
+                if(b==copia_in)
+                    L=false;
+            }
+
+            if(L==true)
+                repetidos[a->first].push_back(copia_in);
+
+            L=true;
+
+
             inicio=a->first;
-            cout<< a->first <<endl;
+
             i+=(a->second-48);
             if(a->first==final){
+                if(i<cont){
+                    Ruta_.clear();
+                    Ruta_= repetido[0];
+                    cont=i;
+                }
+                cout<< "La ruta es: ";
+                cout<<repetido[0]<<endl;
+                repetidos[primerdato].push_back(repetido[0]);
+                repetido.clear();
+                repetido.push_back(copia_pri);
                 inicio=primerdato;
-                cout<<i<<endl;
+                cout<<"cuesta: "<<i<<endl;
                 i=0;
                 }
-            return algoritmo(rutas,inicio,final,repetido,primerdato,i);
+            return algoritmo(rutas,inicio,final,repetido,primerdato,i,repetidos,cont,Ruta_);
             }
-        }
-    return i;
-
+    }
+    cout<<"\nLa ruta mas corta es: "<<Ruta_<<endl;
+    return cont;
 
 }
 
