@@ -6,10 +6,9 @@
 
 using namespace std;
 
-void lectura(vector<char> *ptr){
+void lectura(vector<char> *enrutadores){
     ifstream lectura;
     char b;
-    vector<char> enrutadores;
 
     lectura.open("../lab_4/BD/enrutadores.txt");
 
@@ -21,10 +20,11 @@ void lectura(vector<char> *ptr){
     lectura>>b;
 
     while(!lectura.eof()){
-        enrutadores.push_back(b);
+        enrutadores->push_back(b);
         lectura>>b;
+
     }
-    *ptr=enrutadores;
+   // *ptr=enrutadores;
 
 }
 
@@ -46,25 +46,35 @@ void escritura(vector<char> enrutadores){
 
 }
 
-void escritura(string Ruta,short int Costo){
-
+void escritura(vector<string> conexiones_,vector<string> valores,string Ruta,short int Costo){
+    short int i=0;
     ofstream escritura;
-    escritura.open("../lab_4/BD/topologia.txt",ios::app);
+    escritura.open("../lab_4/BD/topologia.txt");
 
     if (!escritura.is_open())
        {
          cout << "Error abriendo el archivo" << endl;
          exit(1);
-       } 
+       }
 
-    escritura<<Ruta[0]<<Ruta[1]<<" "<<Costo<<endl;
-    escritura<<Ruta[1]<<Ruta[0]<<" "<<Costo<<endl;
+    for(auto a:conexiones_)
+    {
+        escritura<<conexiones_[i] <<" "<<valores[i] <<endl;
+        i++;
+    }
+
+
+    if(Ruta!="0" and Costo!=0){
+        escritura<<Ruta[0]<<Ruta[1]<<" "<<Costo<<endl;
+        escritura<<Ruta[1]<<Ruta[0]<<" "<<Costo<<endl;
+    }
+
 
     escritura.close();
 }
 
-void conexiones(vector<string> &conexiones_){
-    string data,enrutadores;
+void conexiones(vector<string> &conexiones_,vector<string> &valores){
+    string data;
 
     ifstream lectura;
     lectura.open("../lab_4/BD/topologia.txt");
@@ -79,14 +89,10 @@ void conexiones(vector<string> &conexiones_){
 
 
     while(!lectura.eof()){
-        enrutadores+=data;
-        cout <<"Ruta: "<< data <<" ";
+        conexiones_.push_back(data);
         lectura>>data;
-        enrutadores+=data;
-        cout<<"Costo: "<< data << endl;
-        lectura>>data;
-        conexiones_.push_back(enrutadores);
-        enrutadores="";
+        valores.push_back(data);
+        lectura>>data;       
     }
     lectura.close();
 }
@@ -111,7 +117,7 @@ bool verificador(char nombre){
     return true;
 }
 
-int algoritmo(map<char,map<char,char>> rutas,char inicio,char final,vector<string> repetido,char primerdato,short int i,map<char,vector<string>> repetidos,short int cont,string Ruta_,string bloqueado){
+int algoritmo(map<char,map<char,string>> rutas,char inicio,char final,vector<string> repetido,char primerdato,short int i,map<char,vector<string>> repetidos,short int cont,string Ruta_,string bloqueado){
     short int I=0;
     bool L=true;
     string copia_s,copia_pri,copia_in,copia;
@@ -206,7 +212,13 @@ int algoritmo(map<char,map<char,char>> rutas,char inicio,char final,vector<strin
 
             inicio=a->first;
 
-            i+=(a->second-48);
+            if(a->second[1]!='\0'){
+                i+=(a->second[0]-48)*10;
+                i+=(a->second[1]-48);
+            }
+            else
+                i+=(a->second[0]-48);
+
             if(a->first==final){
                 bloqueado=copia_in;
                 for(auto b:repetidos){
