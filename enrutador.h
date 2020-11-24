@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -11,16 +13,24 @@ class enrutador
 private:
 
     map<char,map<char,string>> ruta;
-    map<char,char> conexion;
 
 public:
     enrutador(map<char,map<char,string>> ruta);
 
-    map<char, char> getConexion() const;
-    void setConexion(const map<char, char> &value);
+    bool verificador(char);
 
-    map<char, map<char, string> > getRuta() const;
-    void setRuta(const map<char, map<char, string> > &value);
+    void lectura(vector<char> *ptr);
+
+    void conexiones(vector<string> &conexiones_,vector<string> &valores);
+
+    void escritura(vector<string> conexiones_,vector<string> valores,string Ruta,short int Costo);
+
+    void escritura(vector<char> enrutadores);
+
+    int algoritmo(map<char,map<char,string>>,char,char,vector<string>,char,short int,map<char,vector<string>>,short int,string Ruta_,string bloqueado);
+
+    void crearRutas(map<char,string > conexion,map <char,map<char,string>> &rutas,vector<char> enrutadores,vector<string> conexiones_,vector<string> valores);
+
 };
 
 #endif // ENRUTADOR_H

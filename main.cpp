@@ -2,7 +2,6 @@
 #include <string>
 #include <fstream>
 #include "enrutador.h"
-#include "Funciones.h"
 #include <vector>
 
 using namespace std;
@@ -26,37 +25,30 @@ int main()
           "(4) Salir."<<endl;
 
     char A;
+    //El programa recibe solo 1 numero
     cin>>A;
-    if(A=='1'){
+
+    if(A =='1'){
         char letra,final;
         short int i=0,I=100;
-        lectura(&enrutadores);
-        conexiones(conexiones_,valores);
+        enrutador newred(rutas);
 
+        newred.lectura(&enrutadores);
+        newred.conexiones(conexiones_,valores);
         //se crean las claves
-        for(auto a:enrutadores){
-            letra=a;
-            i=0;
-            for(auto I:conexiones_){
-                if(letra==conexiones_[i][0])
-                    conexion[conexiones_[i][1]]=valores[i];
-                i++;
-            }
-            rutas[a]=conexion;
-            conexion.clear();
-        }
+        newred.crearRutas(conexion,rutas,enrutadores,conexiones_,valores);
         cout<<"Hacer una busqueda\n"
               "Ingresar primer enrutador: "<<endl;
         cin>>letra;
         if(letra<=122 and letra>=97)
             letra-=32;
-        verificador_=verificador(letra);
+        verificador_ = newred.verificador(letra);
         if(!verificador_){
             cout<<"Ingresar segundo enrutador: "<<endl;
             cin>>final;
             if(final<=122 and final>=97)
                 final-=32;
-            verificador_=verificador(final);
+            verificador_ = newred.verificador(final);
             if(!verificador_){
                 system("cls");
                 i=0;
@@ -69,7 +61,7 @@ int main()
                 for(auto b:rutas){
                     repetidos[b.first];
                 }
-                i = algoritmo(rutas,letra,final,repetido,primerdato,i,repetidos,I,Ruta_,bloqueado);
+                i = newred.algoritmo(rutas,letra,final,repetido,primerdato,i,repetidos,I,Ruta_,bloqueado);
                 cout<<"Y cuesta: "<<i<<endl;
 
             }
@@ -83,6 +75,7 @@ int main()
 
     }
     else if(A=='2'){
+        enrutador crear(rutas);
         while (A!='0') {
             char nombre,nombre1;
             string red2="00";
@@ -92,7 +85,7 @@ int main()
             if(nombre1<=122 and nombre1>=97)
                 nombre1-=32;
             //verificacion enrutador
-            verificador_ = verificador(nombre1);
+            verificador_ = crear.verificador(nombre1);
             if(verificador_){
                 //se crea sus conexiones
                 cout<<"Ingrese '0' si ya no desea ingresar un nuevo enrutador\n"<<endl;
@@ -103,14 +96,14 @@ int main()
                 if(nombre!='0'){
                     if(nombre<=122 and nombre>=97)
                         nombre-=32;
-                    verificador_=verificador(nombre);
+                    verificador_ = crear.verificador(nombre);
                     if(verificador_)
                         cout<<nombre<<" no esta"<<endl;
                     }
                 if(!verificador_){
-                    lectura(&enrutadores);
+                    crear.lectura(&enrutadores);
                     enrutadores.push_back(nombre1);
-                    escritura(enrutadores);
+                    crear.escritura(enrutadores);
 
                     cout<<"Costo de la conexion del nuevo enrutador con el que acaba de ingresar: "<<endl;
                     cin>>valor;
@@ -124,8 +117,8 @@ int main()
                         red2[0] = nombre1;
                         red2[1] = nombre;
                         //se escribe en la BD las conexiones con su valor
-                        conexiones(conexiones_,valores);
-                        escritura(conexiones_,valores,red2,valor);
+                        crear.conexiones(conexiones_,valores);
+                        crear.escritura(conexiones_,valores,red2,valor);
                         //se ingresa una a una las conexiones
                         cout<<"Ingrese '0' cuando haya terminado: "<<endl;
                         conexion[nombre] = valor;
@@ -153,10 +146,15 @@ int main()
                     cout<<"El enrutador ya existe!!"<<endl;
                     A='0';
                     }
+            if(A=='1'){
+                conexiones_.clear();
+                enrutadores.clear();
+                valores.clear();
+            }
         }
     }
     else if(A=='3'){
-
+            enrutador eliminar(rutas);
             char nombre1;
             string red2="0";
             short int i=0,valor=0;
@@ -165,11 +163,11 @@ int main()
             if(nombre1<=122 and nombre1>=97)
                 nombre1-=32;
             //verificacion enrutador
-            verificador_ = verificador(nombre1);
+            verificador_ = eliminar.verificador(nombre1);
 
             if(!verificador_){
                 while (A!='0') {
-                lectura(&enrutadores);
+                eliminar.lectura(&enrutadores);
                 for(auto a:enrutadores){
                     if(a==nombre1){
                       enrutadores.erase(enrutadores.begin()+i);
@@ -178,8 +176,8 @@ int main()
                 }
                 i=0;
                 //eliminación del enrutador
-                escritura(enrutadores);
-                conexiones(conexiones_,valores);
+                eliminar.escritura(enrutadores);
+                eliminar.conexiones(conexiones_,valores);
                 for(auto a=conexiones_.begin();a!=conexiones_.end();a++){
                     if(conexiones_[i][0] ==nombre1 or conexiones_[i][1] ==nombre1){
                         conexiones_.erase(conexiones_.begin()+i);
@@ -191,7 +189,7 @@ int main()
                 }
                 i=0;
                 //eliminación de sus conexiones
-                escritura(conexiones_,valores,red2,valor);
+                eliminar.escritura(conexiones_,valores,red2,valor);
                 cout<<"Se ha eliminado el enrutador "<<nombre1<<" y sus conexiones"<<endl;
                 cout<<"Desea agregar otro enrutador?\n"
                       "(1) Si\n"
